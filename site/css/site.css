@@ -1,0 +1,151 @@
+/* nudgeti site
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #ffe5c2;
+}
+
+body {
+  max-width: 30em;
+  padding: 4em 1em;
+  margin: 0 auto;
+
+  color: #333;
+  font-family: sans-serif;
+}
+
+img {
+  max-width: 100%;
+}
+
+section {
+  margin-bottom: 4em;
+}
+
+a {
+  color: #40798c;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #304f46;
+}
+
+/* how it works
+ */
+
+.how ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.how li {
+  position: relative;
+  display: block;
+  padding-left: 2.8em;
+  margin-left: -2.8em;
+  margin-bottom: 2em;
+  counter-increment: item;
+}
+
+.how li:before {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  content: counter(item);
+
+  color: rgba(0,0,0,.3);
+  font-size: 3em;
+}
+
+.btn-install {
+  display: inline-block;
+  padding: .8em 1em;
+  border: 0;
+  border-radius: 3px;
+  background-color: #40798c;
+
+  color: #fff !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.btn-install:hover {
+  background-color: #48899e;
+}
+
+.btn-install:active {
+  background-color: #356575;
+}
+
+.btn-install .icon {
+  display: inline;
+  height: 1.2em;
+  margin-right: .4em;
+
+  vertical-align: -14%;
+}
+
+.btn-install .icon path {
+  fill: rgba(255, 255, 255, .5);
+}
+
+.notification {
+  border-radius: 8px;
+  background-color: #eff0f0;
+  background-image: url('../images/nudgeti-48.png');
+  background-repeat: no-repeat;
+  background-position: right 1em center;
+  box-shadow: 0 0 14px rgba(0,0,0,.2);
+  padding: 1em;
+
+  font-size: .8em;
+}
+
+.notification strong {
+  display: block;
+  margin-bottom: .4em;
+}
+
+.notification p {
+  margin: 0;
+}
+
+/* about
+ */
+
+.about ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.about ul li {
+  display: block;
+  position: relative;
+  padding-left: 2.8em;
+  margin-left: -2.8em;
+  margin-bottom: 1em;
+}
+
+.about ul li:before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  display: block;
+  width: 1em;
+  height: 1em;
+  background-color: rgba(0,0,0,.1);
+}
+
+/* footer
+ */
+
+footer {
+  color: rgba(0,0,0,.8);
+  font-size: .8em;
+}
