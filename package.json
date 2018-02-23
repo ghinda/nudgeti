@@ -1,0 +1,12 @@
+{
+  "name": "nudgeti",
+  "version": "0.1.0",
+  "description": "",
+  "author": "",
+  "license": "GPL-3.0",
+  "private": true,
+  "homepage": "https://www.nudgeti.com",
+  "dependencies": {
+    "@webcomponents/custom-elements": "^1.0.8"
+  }
+}
