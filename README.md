@@ -1,6 +1,6 @@
 # Nudgeti
 
-Nudgeti gives you a nudge when you spend too much time one some websites.
+Nudgeti gives you a nudge when you spend too much time on some websites.
 
 Newsfeed algorithms, trending topics or related videos are a trap for your attention. Companies using them are trying to make you spend as much time as possible on their platforms. 
 
