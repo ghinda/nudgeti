@@ -35,6 +35,20 @@ a:visited {
   color: #304f46;
 }
 
+.btn {
+  display: inline-block;
+  padding: .8em 1em;
+  border: 0;
+  border-radius: 3px;
+  margin-bottom: .4em;
+  background-color: #7ba381;
+
+  color: #fff !important;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
 /* how it works
  */
 
@@ -63,15 +77,9 @@ a:visited {
 }
 
 .btn-install {
-  display: inline-block;
   padding: .8em 1em;
-  border: 0;
-  border-radius: 3px;
-  margin-bottom: .4em;
   background-color: #40798c;
 
-  color: #fff !important;
-  font-weight: bold;
   text-decoration: none;
 }
 
