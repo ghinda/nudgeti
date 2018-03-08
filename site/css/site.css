@@ -48,6 +48,10 @@ a:visited {
   cursor: pointer;
 }
 
+.tagline {
+  font-size: 1.4em;
+}
+
 
 /* how it works
  */
