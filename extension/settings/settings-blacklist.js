@@ -1,52 +1,3 @@
-class SettingsNotification extends HTMLElement {
-  constructor() {
-    super()
-    this.oldMinutes = 0
-
-    this.options = ['2', '5', '10']
-  }
-
-  get minutes() {
-    return settingsStore.get('minutes')
-  }
-
-  change(e) {
-    var minutes = e.target.value
-    this.oldMinutes = minutes
-    settingsStore.set('minutes', minutes)
-  }
-
-  render() {
-    this.innerHTML = `
-      <form>
-        <label>
-          Show notification after:
-          <select>
-            ${this.options.map((m) => `
-              <option value="${m}" ${this.minutes === m ? 'selected' : ''}>
-                ${m} minutes
-              </option>
-            `).join('')}
-          </select>
-      </form>
-    `
-  }
-
-  connectedCallback() {
-    this.render()
-    settingsStore.change(() => {
-      if (this.oldMinutes !== this.minutes) {
-        this.render()
-      }
-
-      this.oldMinutes = this.minutes
-    })
-
-    this.addEventListener('change', this.change)
-  }
-}
-customElements.define('settings-notification', SettingsNotification)
-
 class BlacklistItem extends HTMLElement {
   get id() {
     return this.getAttribute('id')
@@ -117,7 +68,7 @@ class SettingsBlacklist extends HTMLElement {
 
   render () {
     this.innerHTML = `
-        ${this.blacklist.map(item => `<blacklist-item id="${item.id}"></blacklist-item>`).join('')}
+      ${this.blacklist.map(item => `<blacklist-item id="${item.id}"></blacklist-item>`).join('')}
 
       <div class="blacklist-actions">
         <p class="info">

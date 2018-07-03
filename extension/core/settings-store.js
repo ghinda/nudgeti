@@ -1,5 +1,6 @@
 var settingsStore = new Store('settings', {
   minutes: '2',
+  repeat: '2',
   blacklist: [
     {id: '1', hostname: 'www.facebook.com'},
     {id: '2', hostname: 'www.messenger.com'},

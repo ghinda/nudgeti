@@ -31,6 +31,7 @@ var lastHostname = ''
 var store = new Store()
 
 var notifyMinutes = 0
+var notifyRepeat = 2.5
 var blacklist = []
 var resetTime = 0
 var notifyTime = 0
@@ -38,6 +39,7 @@ var pastTime = '1958-01-15'
 
 function updateSettings () {
   notifyMinutes = parseInt(settingsStore.get('minutes'))
+  notifyRepeat = parseInt(settingsStore.get('repeat')) + 0.5
   blacklist = settingsStore.get('blacklist')
   resetTime = milis(notifyMinutes / 5)
   notifyTime = milis(notifyMinutes)
@@ -128,9 +130,9 @@ function checkTime () {
 
     if (
       isBlacklisted(data.hostname)
-      // stayed less or more than twice the allowed time
+      // stayed less or more than the allowed time
       && diff > notifyTime
-      && diff < notifyTime * 2.5
+      && diff < notifyTime * notifyRepeat
     ) {
       browser.notifications.create({
         type: 'basic',

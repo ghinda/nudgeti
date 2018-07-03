@@ -7,7 +7,11 @@
   </head>
   <body>
     <section>
-      <settings-notification></settings-notification>
+      <settings-select label="Show notification after" setting="minutes"></settings-select>
+    </section>
+
+    <section>
+      <settings-select label="Repeat notification" setting="repeat"></settings-select>
     </section>
 
     <section>
@@ -21,6 +25,7 @@
     <script src="../util/polyfill.js"></script>
     <script src="../util/store.js"></script>
     <script src="../core/settings-store.js"></script>
-    <script src="settings.js"></script>
+    <script src="settings-notification.js"></script>
+    <script src="settings-blacklist.js"></script>
   </body>
 </html>
