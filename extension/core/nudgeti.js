@@ -32,26 +32,30 @@ var store = new Store()
 
 var notifyMinutes = 0
 var notifyRepeat = 2.5
-var notifySound = false
+var notifySound = 0
 var blacklist = []
 var resetTime = 0
 var notifyTime = 0
 var pastTime = '1958-01-15'
+
+function playSound() {
+  var sound = new Audio('sounds/sound.wav');
+  sound.volume = notifySound;
+  sound.play();
+}
 
 function updateSettings() {
   var previousNotifySound = notifySound
 
   notifyMinutes = parseInt(settingsStore.get('minutes'))
   notifyRepeat = parseInt(settingsStore.get('repeat')) + 0.5
-  notifySound = settingsStore.get('sound') == "true"
+  notifySound = parseInt(settingsStore.get('sound')) / 100.0
   blacklist = settingsStore.get('blacklist')
   resetTime = milis(notifyMinutes / 5)
   notifyTime = milis(notifyMinutes)
 
-  if (notifySound != previousNotifySound && notifySound) {
-    var sound = new Audio('sounds/sound.wav');
-    sound.play();
-  }
+  if (notifySound != previousNotifySound)
+    playSound()
 
   resetAlarm()
 }
@@ -149,10 +153,8 @@ function checkTime() {
           title: 'Nudgeti',
           message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`,
         })
-        if (notifySound) {
-          var sound = new Audio('sounds/sound.wav');
-          sound.play();
-        }
+
+        playSound()
       }
     })
     .catch(noop)

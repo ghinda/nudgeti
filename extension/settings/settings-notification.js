@@ -1,5 +1,5 @@
 const defaults = {
-  minutes: ['2', '5', '10'].map((n) => {
+  minutes: ['2', '5', '10', '20', '30'].map((n) => {
     return { label: `${n} minutes`, value: n }
   }),
   repeat: [
@@ -9,8 +9,11 @@ const defaults = {
     { label: 'Indefinitely', value: '9999' }
   ],
   sound: [
-    { label: 'Off', value: 'false' },
-    { label: 'On', value: 'true' }
+    { label: '0%', value: '0' },
+    { label: '25%', value: '25' },
+    { label: '50%', value: '50' },
+    { label: '75%', value: '75' },
+    { label: '100%', value: '100' },
   ]
 }
 

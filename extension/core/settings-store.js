@@ -12,5 +12,5 @@ var settingsStore = new Store('settings', {
     { id: '8', hostname: 'www.pinterest.com' },
     { id: '9', hostname: 'news.ycombinator.com' },
   ],
-  sound: 'false'
+  sound: '0'
 })
