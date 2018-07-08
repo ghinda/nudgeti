@@ -1,31 +1,38 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Nudgeti</title>
-    <link rel="stylesheet" href="settings.css"/>
-  </head>
-  <body>
-    <section>
-      <settings-select label="Show notification after" setting="minutes"></settings-select>
-    </section>
 
-    <section>
-      <settings-select label="Repeat notification" setting="repeat"></settings-select>
-    </section>
+<head>
+  <meta charset="utf-8">
+  <title>Nudgeti</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
 
-    <section>
-      <h2>
-        Blacklist
-      </h2>
-      <settings-blacklist></settings-blacklist>
-    </section>
+<body>
+  <section>
+    <settings-select label="Show notification after" setting="minutes"></settings-select>
+  </section>
 
-    <script src="../lib/custom-elements.min.js"></script>
-    <script src="../util/polyfill.js"></script>
-    <script src="../util/store.js"></script>
-    <script src="../core/settings-store.js"></script>
-    <script src="settings-notification.js"></script>
-    <script src="settings-blacklist.js"></script>
-  </body>
+  <section>
+    <settings-select label="Repeat notification" setting="repeat"></settings-select>
+  </section>
+
+  <section>
+    <settings-select label="Play notification sound" setting="sound"></settings-select>
+  </section>
+
+  <section>
+    <h2>
+      Blacklist
+    </h2>
+    <settings-blacklist></settings-blacklist>
+  </section>
+
+  <script src="../lib/custom-elements.min.js"></script>
+  <script src="../util/polyfill.js"></script>
+  <script src="../util/store.js"></script>
+  <script src="../core/settings-store.js"></script>
+  <script src="settings-notification.js"></script>
+  <script src="settings-blacklist.js"></script>
+</body>
+
 </html>

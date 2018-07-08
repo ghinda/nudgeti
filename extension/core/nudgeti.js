@@ -3,11 +3,11 @@
  *
  */
 
-function noop () {
+function noop() {
   return
 }
 
-function humanTime (milis = 1000) {
+function humanTime(milis = 1000) {
   var seconds = Math.floor(milis / 1000)
   if (seconds < 60) {
     return `${seconds} seconds`
@@ -22,7 +22,7 @@ function humanTime (milis = 1000) {
   return `${hours} hours`
 }
 
-function milis (minutes) {
+function milis(minutes) {
   return minutes * 60 * 1000
 }
 
@@ -32,17 +32,26 @@ var store = new Store()
 
 var notifyMinutes = 0
 var notifyRepeat = 2.5
+var notifySound = false
 var blacklist = []
 var resetTime = 0
 var notifyTime = 0
 var pastTime = '1958-01-15'
 
-function updateSettings () {
+function updateSettings() {
+  var previousNotifySound = notifySound
+
   notifyMinutes = parseInt(settingsStore.get('minutes'))
   notifyRepeat = parseInt(settingsStore.get('repeat')) + 0.5
+  notifySound = settingsStore.get('sound') == "true"
   blacklist = settingsStore.get('blacklist')
   resetTime = milis(notifyMinutes / 5)
   notifyTime = milis(notifyMinutes)
+
+  if (notifySound != previousNotifySound && notifySound) {
+    var sound = new Audio('sounds/sound.wav');
+    sound.play();
+  }
 
   resetAlarm()
 }
@@ -50,21 +59,21 @@ function updateSettings () {
 updateSettings()
 settingsStore.change(updateSettings)
 
-function isBlacklisted (hostname) {
+function isBlacklisted(hostname) {
   return !!blacklist.find((b) => b.hostname === hostname)
 }
 
-function getHostname (fullUrl) {
+function getHostname(fullUrl) {
   var url = new URL(fullUrl)
   return url.hostname
 }
 
-function resetAlarm () {
+function resetAlarm() {
   browser.alarms.clearAll()
-  browser.alarms.create({periodInMinutes: notifyMinutes})
+  browser.alarms.create({ periodInMinutes: notifyMinutes })
 }
 
-function getActiveTab () {
+function getActiveTab() {
   return browser.tabs.query({
     active: true,
     currentWindow: true
@@ -72,7 +81,7 @@ function getActiveTab () {
     if (!res.length) {
       // probably in devtools,
       // get from all windows.
-      return browser.tabs.query({active: true})
+      return browser.tabs.query({ active: true })
     }
 
     return res
@@ -100,7 +109,7 @@ function getActiveTab () {
   })
 }
 
-function updateTab () {
+function updateTab() {
   return getActiveTab()
     .then((data) => {
       if (isBlacklisted(data.hostname)) {
@@ -112,10 +121,10 @@ function updateTab () {
         ) {
           // update tab data
           resetAlarm()
-          data = Object.assign(data, {lastActive: new Date()})
+          data = Object.assign(data, { lastActive: new Date() })
         }
 
-        store.set(data.hostname, Object.assign(data, {lastFocus: new Date()}))
+        store.set(data.hostname, Object.assign(data, { lastFocus: new Date() }))
       }
 
       lastHostname = data.hostname
@@ -123,32 +132,35 @@ function updateTab () {
     .catch(noop)
 }
 
-function checkTime () {
+function checkTime() {
   getActiveTab()
-  .then((data) => {
-    var diff = new Date() - data.lastActive
+    .then((data) => {
+      var diff = new Date() - data.lastActive
 
-    if (
-      isBlacklisted(data.hostname)
-      // stayed less or more than the allowed time
-      && diff > notifyTime
-      && diff < notifyTime * notifyRepeat
-    ) {
-      browser.notifications.create({
-        type: 'basic',
-        iconUrl: browser.extension.getURL('images/nudgeti-128.png'),
-        title: 'Nudgeti',
-        message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`,
-      })
-    }
-  })
-  .catch(noop)
+      if (
+        isBlacklisted(data.hostname)
+        // stayed less or more than the allowed time
+        && diff > notifyTime
+        && diff < notifyTime * notifyRepeat
+      ) {
+        browser.notifications.create({
+          type: 'basic',
+          iconUrl: browser.extension.getURL('images/nudgeti-128.png'),
+          title: 'Nudgeti',
+          message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`,
+        })
+        if (notifySound) {
+          var sound = new Audio('sounds/sound.wav');
+          sound.play();
+        }
+      }
+    })
+    .catch(noop)
 }
 
-function init () {
+function init() {
   // update stored data on active tab
   updateTab()
-
   // update stored data when tab changes
   browser.tabs.onHighlighted.addListener(updateTab)
   browser.tabs.onUpdated.addListener(updateTab)
