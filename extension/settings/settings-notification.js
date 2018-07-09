@@ -7,6 +7,13 @@ const defaults = {
     {label: '2 times', value: '2'},
     {label: '5 times', value: '5'},
     {label: 'Indefinitely', value: '9999'}
+  ],
+  sound: [
+    {label: '0%', value: '0'},
+    {label: '25%', value: '0.25'},
+    {label: '50%', value: '0.50'},
+    {label: '75%', value: '0.75'},
+    {label: '100%', value: '1'},
   ]
 }
 
@@ -66,3 +73,18 @@ class SettingsSelect extends HTMLElement {
   }
 }
 customElements.define('settings-select', SettingsSelect)
+
+class SoundSelect extends SettingsSelect {
+  get setting() {
+    return 'sound'
+  }
+
+  change(e) {
+    var value = e.target.value
+    this.oldValue = value
+    settingsStore.set(this.setting, value)
+
+    playSound(parseFloat(value))
+  }
+}
+customElements.define('sound-select', SoundSelect)

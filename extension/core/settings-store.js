@@ -11,5 +11,6 @@ var settingsStore = new Store('settings', {
     {id: '7', hostname: 'www.tumblr.com'},
     {id: '8', hostname: 'www.pinterest.com'},
     {id: '9', hostname: 'news.ycombinator.com'},
-  ]
+  ],
+  sound: '0'
 })

@@ -25,6 +25,7 @@
       "util/polyfill.js",
       "util/store.js",
       "core/settings-store.js",
+      "core/sound.js",
       "core/nudgeti.js"
     ]
   },
