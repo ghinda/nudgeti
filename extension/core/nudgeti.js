@@ -32,6 +32,7 @@ var store = new Store()
 
 var notifyMinutes = 0
 var notifyRepeat = 2.5
+var notifySound = 0
 var blacklist = []
 var resetTime = 0
 var notifyTime = 0
@@ -43,6 +44,7 @@ function updateSettings () {
   blacklist = settingsStore.get('blacklist')
   resetTime = milis(notifyMinutes / 5)
   notifyTime = milis(notifyMinutes)
+  notifySound = parseFloat(settingsStore.get('sound'))
 
   resetAlarm()
 }
@@ -140,6 +142,8 @@ function checkTime () {
         title: 'Nudgeti',
         message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`,
       })
+
+      playSound(notifySound)
     }
   })
   .catch(noop)
