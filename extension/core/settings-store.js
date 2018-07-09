@@ -1,3 +1,5 @@
+/* globals Store */
+/* eslint-disable no-unused-vars */
 var settingsStore = new Store('settings', {
   minutes: '2',
   repeat: '2',
@@ -10,7 +12,7 @@ var settingsStore = new Store('settings', {
     {id: '6', hostname: 'www.instagram.com'},
     {id: '7', hostname: 'www.tumblr.com'},
     {id: '8', hostname: 'www.pinterest.com'},
-    {id: '9', hostname: 'news.ycombinator.com'},
+    {id: '9', hostname: 'news.ycombinator.com'}
   ],
   sound: '0'
 })

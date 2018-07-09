@@ -1,38 +1,39 @@
+/* globals customElements, HTMLElement, settingsStore */
 class BlacklistItem extends HTMLElement {
-  get id() {
+  get id () {
     return this.getAttribute('id')
   }
 
-  get blacklist() {
+  get blacklist () {
     return settingsStore.get('blacklist')
   }
 
-  get hostname() {
+  get hostname () {
     return this.blacklist.find((b) => b.id === this.id).hostname
   }
 
-  get index() {
+  get index () {
     return this.blacklist.findIndex((b) => b.id === this.id)
   }
 
-  change(e) {
+  change (e) {
     var hostname = e.target.value
-    if (!!~this.index) {
+    if (~this.index) {
       var blacklist = this.blacklist
       blacklist[this.index].hostname = hostname
       settingsStore.set('blacklist', blacklist)
     }
   }
 
-  remove() {
-    if (!!~this.index) {
+  remove () {
+    if (~this.index) {
       var blacklist = this.blacklist
       blacklist.splice(this.index, 1)
       settingsStore.set('blacklist', blacklist)
     }
   }
 
-  connectedCallback() {
+  connectedCallback () {
     this.innerHTML = `
       <input type="text" value="${this.hostname}">
       <button type="button" class="js-remove-site btn">
@@ -47,22 +48,22 @@ class BlacklistItem extends HTMLElement {
 customElements.define('blacklist-item', BlacklistItem)
 
 class SettingsBlacklist extends HTMLElement {
-  constructor() {
+  constructor () {
     super()
     this.oldBlacklist = []
   }
 
-  get blacklist() {
+  get blacklist () {
     return settingsStore.get('blacklist')
   }
 
-  add() {
+  add () {
     var blacklist = this.blacklist
     blacklist.push({id: String(Date.now()), hostname: ''})
     settingsStore.set('blacklist', blacklist)
   }
 
-  mount() {
+  mount () {
     this.querySelector('.js-add-site').addEventListener('click', () => this.add())
   }
 
@@ -86,7 +87,7 @@ class SettingsBlacklist extends HTMLElement {
     this.mount()
   }
 
-  connectedCallback() {
+  connectedCallback () {
     this.render()
 
     settingsStore.change(() => {
@@ -99,4 +100,3 @@ class SettingsBlacklist extends HTMLElement {
   }
 }
 customElements.define('settings-blacklist', SettingsBlacklist)
-

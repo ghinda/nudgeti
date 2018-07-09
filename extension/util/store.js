@@ -1,11 +1,13 @@
+/* globals browser */
+/* eslint-disable no-unused-vars */
 function Store (name, data = {}) {
   var events = []
   var clone = (obj) => JSON.parse(JSON.stringify(obj))
 
   this.trigger = () => {
-     events.slice().forEach(event => {
-       return event()
-     })
+    events.slice().forEach(event => {
+      return event()
+    })
   }
 
   this.saveInStorage = () => {
@@ -47,7 +49,6 @@ function Store (name, data = {}) {
 
         data = storeData
         this.trigger()
-        return
       })
     }
 
@@ -58,4 +59,3 @@ function Store (name, data = {}) {
     browser.storage.onChanged.addListener(updateFromStorage)
   }
 }
-

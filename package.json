@@ -6,7 +6,13 @@
   "license": "GPL-3.0",
   "private": true,
   "homepage": "https://www.nudgeti.com",
+  "scripts": {
+    "test": "standard"
+  },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.0.8"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
   }
 }

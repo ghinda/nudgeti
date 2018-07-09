@@ -1,3 +1,5 @@
+/* global Notification, alert */
+
 function humanTime (milis = 1000) {
   var seconds = Math.floor(milis / 1000)
   if (seconds < 60) {
@@ -13,7 +15,6 @@ function humanTime (milis = 1000) {
   return `${hours} hours`
 }
 
-
 function checkPermission () {
   if (Notification.permission === 'granted') {
     return Promise.resolve()
@@ -24,7 +25,7 @@ function checkPermission () {
       if (permission === 'granted') {
         return resolve()
       }
-      reject()
+      reject(new Error('Permission not granted.'))
     })
   })
 }
@@ -33,17 +34,19 @@ var startTime = new Date()
 
 function showNotification () {
   checkPermission()
-  .then(() => {
-    var diff = new Date() - startTime
-
-    new Notification('Nudgeti', {
-      icon: '/images/nudgeti-48.png',
-      body: `You spent more than ${humanTime(diff)} on www.nudgeti.com.`,
+    .then(() => {
+      var diff = new Date() - startTime
+      /* eslint-disable no-new */
+      new Notification('Nudgeti', {
+        icon: '/images/nudgeti-48.png',
+        body: `You spent more than ${humanTime(diff)} on www.nudgeti.com.`
+      })
     })
-  })
-  .catch((err) => {
-    alert('You need to allow nudgeti.com to send notifications, for the demo to work.')
-  })
+    .catch((err) => {
+      alert('You need to allow nudgeti.com to send notifications, for the demo to work.')
+
+      return err
+    })
 }
 
 document.querySelector('.js-demo').addEventListener('click', showNotification)

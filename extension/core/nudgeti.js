@@ -1,11 +1,10 @@
+/* globals Store, settingsStore, playSound, browser */
 /*
  * Nudgeti
  *
  */
 
-function noop () {
-  return
-}
+function noop () {}
 
 function humanTime (milis = 1000) {
   var seconds = Math.floor(milis / 1000)
@@ -26,7 +25,6 @@ function milis (minutes) {
   return minutes * 60 * 1000
 }
 
-var alarmKey = 'nudgeti'
 var lastHostname = ''
 var store = new Store()
 
@@ -80,7 +78,7 @@ function getActiveTab () {
     return res
   }).then((res) => {
     if (!res.length) {
-      return Promise.reject()
+      return Promise.reject(new Error())
     }
 
     var tab = res[0]
@@ -108,9 +106,9 @@ function updateTab () {
       if (isBlacklisted(data.hostname)) {
         // was away for a while
         if (
-          new Date() - data.lastFocus > resetTime
+          new Date() - data.lastFocus > resetTime &&
           // hostname changed
-          && lastHostname !== data.hostname
+          lastHostname !== data.hostname
         ) {
           // update tab data
           resetAlarm()
@@ -126,27 +124,27 @@ function updateTab () {
 }
 
 function checkTime () {
-  getActiveTab()
-  .then((data) => {
-    var diff = new Date() - data.lastActive
+  return getActiveTab()
+    .then((data) => {
+      var diff = new Date() - data.lastActive
 
-    if (
-      isBlacklisted(data.hostname)
-      // stayed less or more than the allowed time
-      && diff > notifyTime
-      && diff < notifyTime * notifyRepeat
-    ) {
-      browser.notifications.create({
-        type: 'basic',
-        iconUrl: browser.extension.getURL('images/nudgeti-128.png'),
-        title: 'Nudgeti',
-        message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`,
-      })
+      if (
+        isBlacklisted(data.hostname) &&
+        // stayed less or more than the allowed time
+        diff > notifyTime &&
+        diff < notifyTime * notifyRepeat
+      ) {
+        browser.notifications.create({
+          type: 'basic',
+          iconUrl: browser.extension.getURL('images/nudgeti-128.png'),
+          title: 'Nudgeti',
+          message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`
+        })
 
-      playSound(notifySound)
-    }
-  })
-  .catch(noop)
+        playSound(notifySound)
+      }
+    })
+    .catch(noop)
 }
 
 function init () {

@@ -1,9 +1,10 @@
+/* globals chrome */
 /*
  * basic webextension api polyfill
  *
  */
 
-function promisify(api) {
+function promisify (api) {
   return (params) => {
     return new Promise((resolve, reject) => {
       api(params, (res) => resolve(res))
@@ -11,7 +12,7 @@ function promisify(api) {
   }
 }
 
-if (typeof browser === 'undefined') {
+if (typeof window.browser === 'undefined') {
   var browser = chrome
   browser.tabs.query = promisify(chrome.tabs.query)
   browser.storage.sync.get = promisify(chrome.storage.sync.get)

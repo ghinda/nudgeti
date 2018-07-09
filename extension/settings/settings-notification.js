@@ -1,3 +1,4 @@
+/* globals customElements, playSound, settingsStore, HTMLElement */
 const defaults = {
   minutes: ['2', '5', '10'].map((n) => {
     return {label: `${n} minutes`, value: n}
@@ -13,37 +14,37 @@ const defaults = {
     {label: '25%', value: '0.25'},
     {label: '50%', value: '0.50'},
     {label: '75%', value: '0.75'},
-    {label: '100%', value: '1'},
+    {label: '100%', value: '1'}
   ]
 }
 
 class SettingsSelect extends HTMLElement {
-  constructor() {
+  constructor () {
     super()
     this.oldValue = 0
 
     this.options = defaults[this.setting]
   }
 
-  get label() {
+  get label () {
     return this.getAttribute('label')
   }
 
-  get setting() {
+  get setting () {
     return this.getAttribute('setting')
   }
 
-  get value() {
+  get value () {
     return settingsStore.get(this.setting)
   }
 
-  change(e) {
+  change (e) {
     var value = e.target.value
     this.oldValue = value
     settingsStore.set(this.setting, value)
   }
 
-  render() {
+  render () {
     this.innerHTML = `
       <form>
         <label>
@@ -59,7 +60,7 @@ class SettingsSelect extends HTMLElement {
     `
   }
 
-  connectedCallback() {
+  connectedCallback () {
     this.render()
     settingsStore.change(() => {
       if (this.oldValue !== this.value) {
@@ -75,11 +76,11 @@ class SettingsSelect extends HTMLElement {
 customElements.define('settings-select', SettingsSelect)
 
 class SoundSelect extends SettingsSelect {
-  get setting() {
+  get setting () {
     return 'sound'
   }
 
-  change(e) {
+  change (e) {
     var value = e.target.value
     this.oldValue = value
     settingsStore.set(this.setting, value)

@@ -1,4 +1,6 @@
-function playSound(volume) {
+/* globals Audio, browser */
+/* eslint-disable no-unused-vars */
+function playSound (volume) {
   if (volume === 0) {
     return
   }
