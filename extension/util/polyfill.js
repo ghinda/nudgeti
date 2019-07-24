@@ -4,17 +4,36 @@
  *
  */
 
-function promisify (api) {
+function promisify (api, method) {
   return (params) => {
     return new Promise((resolve, reject) => {
-      api(params, (res) => resolve(res))
+      api[method](params, (res) => {
+        if (chrome && chrome.runtime && chrome.runtime.lastError) {
+          return reject(chrome.runtime.lastError)
+        }
+
+        resolve(res)
+      })
     })
   }
 }
 
 if (typeof window.browser === 'undefined') {
-  var browser = chrome
-  browser.tabs.query = promisify(chrome.tabs.query)
-  browser.storage.sync.get = promisify(chrome.storage.sync.get)
-  browser.storage.sync.set = promisify(chrome.storage.sync.set)
+  var browser = {
+    storage: {
+      sync: {
+        get: promisify(chrome.storage.sync, 'get'),
+        set: promisify(chrome.storage.sync, 'set')
+      },
+      onChanged: chrome.storage.onChanged
+    },
+    tabs: {
+      query: promisify(chrome.tabs, 'query'),
+      onHighlighted: chrome.tabs.onHighlighted,
+      onUpdated: chrome.tabs.onUpdated
+    },
+    alarms: chrome.alarms,
+    notifications: chrome.notifications,
+    extension: chrome.extension
+  }
 }
