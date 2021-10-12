@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Nudgeti - Website Blocker Alternative",
   "description": "Don't waste time on distracting websites. A gentler alternative to website blockers.",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "icons": {
     "16": "images/nudgeti-16.png",
     "48": "images/nudgeti-48.png",

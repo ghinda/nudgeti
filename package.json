@@ -9,9 +9,7 @@
   "scripts": {
     "test": "standard"
   },
-  "dependencies": {
-    "@webcomponents/custom-elements": "^1.0.8"
-  },
+  "dependencies": {},
   "devDependencies": {
     "standard": "^11.0.1"
   }
