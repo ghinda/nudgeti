@@ -7,10 +7,12 @@
   "private": true,
   "homepage": "https://www.nudgeti.com",
   "scripts": {
-    "test": "standard"
+    "test": "standard",
+    "firefox": "node manifest.mjs firefox",
+    "chrome": "node manifest.mjs"
   },
   "dependencies": {},
   "devDependencies": {
-    "standard": "^11.0.1"
+    "standard": "^17.0.0"
   }
 }

@@ -17,9 +17,9 @@ class BlacklistItem extends HTMLElement {
   }
 
   change (e) {
-    var hostname = e.target.value
+    const hostname = e.target.value
     if (~this.index) {
-      var blacklist = this.blacklist
+      const blacklist = this.blacklist
       blacklist[this.index].hostname = hostname
       settingsStore.set('blacklist', blacklist)
     }
@@ -27,7 +27,7 @@ class BlacklistItem extends HTMLElement {
 
   remove () {
     if (~this.index) {
-      var blacklist = this.blacklist
+      const blacklist = this.blacklist
       blacklist.splice(this.index, 1)
       settingsStore.set('blacklist', blacklist)
     }
@@ -58,8 +58,8 @@ class SettingsBlacklist extends HTMLElement {
   }
 
   add () {
-    var blacklist = this.blacklist
-    blacklist.push({id: String(Date.now()), hostname: ''})
+    const blacklist = this.blacklist
+    blacklist.push({ id: String(Date.now()), hostname: '' })
     settingsStore.set('blacklist', blacklist)
   }
 

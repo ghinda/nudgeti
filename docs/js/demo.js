@@ -1,17 +1,17 @@
 /* global Notification, alert */
 
 function humanTime (milis = 1000) {
-  var seconds = Math.floor(milis / 1000)
+  const seconds = Math.floor(milis / 1000)
   if (seconds < 60) {
     return `${seconds} seconds`
   }
 
-  var minutes = Math.floor(seconds / 60)
+  const minutes = Math.floor(seconds / 60)
   if (minutes < 60) {
     return `${minutes} minutes`
   }
 
-  var hours = Math.floor(minutes / 60)
+  const hours = Math.floor(minutes / 60)
   return `${hours} hours`
 }
 
@@ -30,12 +30,12 @@ function checkPermission () {
   })
 }
 
-var startTime = new Date()
+const startTime = new Date()
 
 function showNotification () {
   checkPermission()
     .then(() => {
-      var diff = new Date() - startTime
+      const diff = new Date() - startTime
       /* eslint-disable no-new */
       new Notification('Nudgeti', {
         icon: '/images/nudgeti-48.png',

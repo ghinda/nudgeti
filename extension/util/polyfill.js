@@ -1,3 +1,4 @@
+/* globals self */
 /* globals chrome */
 /*
  * basic webextension api polyfill
@@ -18,10 +19,14 @@ function promisify (api, method) {
   }
 }
 
-if (typeof window.browser === 'undefined') {
-  var browser = {
+if (typeof self.browser === 'undefined') {
+  self.browser = {
     storage: {
       sync: {
+        get: promisify(chrome.storage.sync, 'get'),
+        set: promisify(chrome.storage.sync, 'set')
+      },
+      session: {
         get: promisify(chrome.storage.sync, 'get'),
         set: promisify(chrome.storage.sync, 'set')
       },
@@ -34,6 +39,6 @@ if (typeof window.browser === 'undefined') {
     },
     alarms: chrome.alarms,
     notifications: chrome.notifications,
-    extension: chrome.extension
+    runtime: chrome.runtime
   }
 }

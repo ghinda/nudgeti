@@ -1,23 +1,21 @@
-/* globals Store, settingsStore, playSound, browser */
+/* globals Store, settingsStore, browser */
 /*
  * Nudgeti
  *
  */
 
-function noop () {}
-
 function humanTime (milis = 1000) {
-  var seconds = Math.floor(milis / 1000)
+  const seconds = Math.floor(milis / 1000)
   if (seconds < 60) {
     return `${seconds} seconds`
   }
 
-  var minutes = Math.floor(seconds / 60)
+  const minutes = Math.floor(seconds / 60)
   if (minutes < 60) {
     return `${minutes} minutes`
   }
 
-  var hours = Math.floor(minutes / 60)
+  const hours = Math.floor(minutes / 60)
   return `${hours} hours`
 }
 
@@ -25,137 +23,115 @@ function milis (minutes) {
   return minutes * 60 * 1000
 }
 
-var lastHostname = ''
-var store = new Store()
+const store = new Store('history', {}, false)
 
-var notifyMinutes = 0
-var notifyRepeat = 2.5
-var notifySound = 0
-var blacklist = []
-var resetTime = 0
-var notifyTime = 0
-var pastTime = '1958-01-15'
+const pastTime = '1958-01-15'
 
-function updateSettings () {
-  notifyMinutes = parseInt(settingsStore.get('minutes'))
-  notifyRepeat = parseInt(settingsStore.get('repeat')) + 0.5
-  blacklist = settingsStore.get('blacklist')
-  resetTime = milis(notifyMinutes / 5)
-  notifyTime = milis(notifyMinutes)
-  notifySound = parseFloat(settingsStore.get('sound'))
-
-  resetAlarm()
-}
-
-updateSettings()
-settingsStore.change(updateSettings)
+resetAlarm()
+settingsStore.change(resetAlarm)
 
 function isBlacklisted (hostname) {
+  const blacklist = settingsStore.get('blacklist')
   return !!blacklist.find((b) => b.hostname === hostname)
 }
 
 function getHostname (fullUrl) {
-  var url = new URL(fullUrl)
+  const url = new URL(fullUrl)
   return url.hostname
 }
 
 function resetAlarm () {
+  const notifyMinutes = parseInt(settingsStore.get('minutes'))
   browser.alarms.clearAll()
-  browser.alarms.create({periodInMinutes: notifyMinutes})
+  browser.alarms.create({ periodInMinutes: notifyMinutes })
 }
 
-function getActiveTab () {
-  return browser.tabs.query({
+async function getActiveTab () {
+  const tabs = await browser.tabs.query({
     active: true,
-    currentWindow: true
-  }).then((res) => {
-    if (!res.length) {
-      // probably in devtools,
-      // get from all windows.
-      return browser.tabs.query({active: true})
+    lastFocusedWindow: true
+  })
+
+  if (!tabs.length) {
+    return {}
+  }
+
+  const tab = tabs[0]
+  const hostname = getHostname(tab.url)
+
+  let data = store.get(hostname)
+  if (!data) {
+    data = {
+      hostname,
+      lastActive: pastTime,
+      lastFocus: pastTime
     }
+  }
 
-    return res
-  }).then((res) => {
-    if (!res.length) {
-      return Promise.reject(new Error())
-    }
-
-    var tab = res[0]
-    var hostname = getHostname(tab.url)
-
-    var data = store.get(hostname)
-    if (!data) {
-      data = {
-        hostname: hostname,
-        lastActive: pastTime,
-        lastFocus: pastTime
-      }
-    }
-
-    return Object.assign(data, {
-      lastActive: new Date(data.lastActive),
-      lastFocus: new Date(data.lastFocus)
-    })
+  return Object.assign(data, {
+    lastActive: new Date(data.lastActive),
+    lastFocus: new Date(data.lastFocus)
   })
 }
 
-function updateTab () {
-  return getActiveTab()
-    .then((data) => {
-      if (isBlacklisted(data.hostname)) {
-        // was away for a while
-        if (
-          new Date() - data.lastFocus > resetTime &&
-          // hostname changed
-          lastHostname !== data.hostname
-        ) {
-          // update tab data
-          resetAlarm()
-          data = Object.assign(data, {lastActive: new Date()})
-        }
+async function updateTab () {
+  let data = await getActiveTab()
+  if (Object.keys(data).length === 0) {
+    return
+  }
 
-        store.set(data.hostname, Object.assign(data, {lastFocus: new Date()}))
-      }
+  const notifyMinutes = parseInt(settingsStore.get('minutes'))
+  const resetTime = milis(notifyMinutes / 5)
 
-      lastHostname = data.hostname
+  if (isBlacklisted(data.hostname)) {
+    // was away for a while
+    if (
+      new Date() - data.lastFocus > resetTime &&
+      // hostname changed
+      store.get('lastHostname') !== data.hostname
+    ) {
+      // update tab data
+      resetAlarm()
+      data = Object.assign(data, { lastActive: new Date() })
+    }
+
+    store.set(data.hostname, Object.assign(data, { lastFocus: new Date() }))
+  }
+
+  store.set('lastHostname', data.hostname)
+}
+
+async function checkTime () {
+  const data = await getActiveTab()
+  if (Object.keys(data).length === 0) {
+    return
+  }
+
+  const diff = new Date() - data.lastActive
+  const notifyRepeat = parseInt(settingsStore.get('repeat')) + 0.5
+  const notifyMinutes = parseInt(settingsStore.get('minutes'))
+  const notifyTime = milis(notifyMinutes)
+
+  if (
+    isBlacklisted(data.hostname) &&
+    // stayed less or more than the allowed time
+    diff > notifyTime &&
+    diff < notifyTime * notifyRepeat
+  ) {
+    browser.notifications.create({
+      type: 'basic',
+      iconUrl: browser.runtime.getURL('images/nudgeti-128.png'),
+      title: 'Nudgeti',
+      message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`
     })
-    .catch(noop)
+  }
 }
 
-function checkTime () {
-  return getActiveTab()
-    .then((data) => {
-      var diff = new Date() - data.lastActive
+// update stored data on active tab
+updateTab()
 
-      if (
-        isBlacklisted(data.hostname) &&
-        // stayed less or more than the allowed time
-        diff > notifyTime &&
-        diff < notifyTime * notifyRepeat
-      ) {
-        browser.notifications.create({
-          type: 'basic',
-          iconUrl: browser.extension.getURL('images/nudgeti-128.png'),
-          title: 'Nudgeti',
-          message: `You spent more than ${humanTime(diff)} on ${data.hostname}.`
-        })
+// update stored data when tab changes
+browser.tabs.onHighlighted.addListener(updateTab)
+browser.tabs.onUpdated.addListener(updateTab)
 
-        playSound(notifySound)
-      }
-    })
-    .catch(noop)
-}
-
-function init () {
-  // update stored data on active tab
-  updateTab()
-
-  // update stored data when tab changes
-  browser.tabs.onHighlighted.addListener(updateTab)
-  browser.tabs.onUpdated.addListener(updateTab)
-
-  browser.alarms.onAlarm.addListener(checkTime)
-}
-
-init()
+browser.alarms.onAlarm.addListener(checkTime)

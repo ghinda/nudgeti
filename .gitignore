@@ -4,3 +4,6 @@ node_modules/
 # extension
 *.xpi
 *.zip
+
+# manifest
+extension/manifest.json

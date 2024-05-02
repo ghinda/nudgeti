@@ -1,8 +1,7 @@
-/* globals browser */
-/* eslint-disable no-unused-vars */
-function Store (name, data = {}) {
-  var events = []
-  var clone = (obj) => JSON.parse(JSON.stringify(obj))
+/* globals self, browser */
+self.Store = function (name, data = {}, persistent = true) {
+  const events = []
+  const clone = (obj) => JSON.parse(JSON.stringify(obj))
 
   this.trigger = () => {
     events.slice().forEach(event => {
@@ -11,7 +10,7 @@ function Store (name, data = {}) {
   }
 
   this.saveInStorage = () => {
-    var saved = {}
+    const saved = {}
     saved[name] = data
     browser.storage.sync.set(saved)
   }
@@ -40,9 +39,10 @@ function Store (name, data = {}) {
   }
 
   if (name) {
-    var updateFromStorage = () => {
-      return browser.storage.sync.get(name).then((res = {}) => {
-        var storeData = res[name]
+    const storageType = persistent ? 'sync' : 'session'
+    const updateFromStorage = () => {
+      return browser.storage[storageType].get(name).then((res = {}) => {
+        const storeData = res[name]
         if (!storeData || JSON.stringify(data) === JSON.stringify(storeData)) {
           return
         }
